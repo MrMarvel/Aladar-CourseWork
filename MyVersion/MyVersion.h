@@ -7,13 +7,36 @@
 #include "Sixangle.h"
 #include "Figure.h"
 #include "Collider.h"
+#include <stdio.h>
 
 using namespace std;
 
+
+
 class FigureController {
 private:
+	struct MenuItem {
+		string name;
+		void (FigureController::*func)();
+		MenuItem(string name, void (FigureController::* func)()) {
+			this->name = name;
+			this->func = func;
+		}
+	};
+private:
 	vector<Figure*> figures;
+	vector<MenuItem> menuItems;
 public:
+	FigureController() {
+		menuItems.push_back(MenuItem("Создать прямоугольник", &FigureController::create_rectangle));
+		menuItems.push_back(MenuItem("Удалить прямоугольник", &FigureController::remove_rectangle));
+		menuItems.push_back(MenuItem("Создать шестиугольник", &FigureController::create_sexangle));
+		menuItems.push_back(MenuItem("Удалить шестиугольник", &FigureController::remove_sexangle));
+		menuItems.push_back(MenuItem("Вывести все фигуры", &FigureController::print_figures));
+		menuItems.push_back(MenuItem("Переместить фигуру", &FigureController::move_figure));
+		menuItems.push_back(MenuItem("Факт пересечения фигур", &FigureController::collide_detection_between_figures));
+	}
+
 	void main() {
 		bool exit_state = false;
 		bool first_time = true;
@@ -21,42 +44,18 @@ public:
 			if (!first_time) system("pause");
 			else first_time = false;
 			system("cls");
-			cout << "1.Создать прямоугольник" << endl;
-			cout << "2.Удалить прямоугольник" << endl;
-			cout << "3.Создать шестиугольник" << endl;
-			cout << "4.Удалить шестиугольник" << endl;
-			cout << "5.Вывести все фигуры" << endl;
-			cout << "6.Переместить фигуру" << endl;
-			cout << "7.Факт пересечения фигур" << endl;
+			for (auto i = 0; i < menuItems.size(); i++) {
+				printf("%d. %s\n", i + 1, menuItems[i].name.c_str());
+			}
 			cout << endl;
 			int choose = 0;
 			cin >> choose;
-			switch (choose) {
-			case 1:
-				create_rectangle();
-				break;
-			case 2:
-				remove_rectangle();
-				break;
-			case 3:
-				create_sexangle();
-				break;
-			case 4:
-				remove_sexangle();
-				break;
-			case 5:
-				print_figures();
-				break;
-			case 6:
-				move_figure();
-				break;
-			case 7:
-				collide_detection_between_figures();
-				break;
-			default:
+			if (choose < 1 || choose > menuItems.size()) {
 				exit_state = true;
 				break;
 			}
+			auto runnable_func = menuItems[choose].func;
+			(this->*runnable_func)();
 		}
 	}
 
@@ -271,8 +270,8 @@ private:
 };
 
 int main() {
+	setlocale(LC_ALL, "Russian");
 	system("color 02");
-	setlocale(LC_ALL, "rus");
 	FigureController main;
 	main.main();
 }
