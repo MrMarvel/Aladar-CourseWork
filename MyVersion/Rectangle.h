@@ -43,7 +43,8 @@ public:
 		d2_2.Y += dy;
 	}
 	void print() {
-		printf("Прямоугольник d1 {%f %f} d2 {%f %f}\n", d1_1.X, d1_1.Y, d1_2.X, d1_2.Y);
+		printf("Прямоугольник p1 {%f %f} p2 {%f %f}\n", d1_1.X, d1_1.Y, d2_1.X, d2_1.Y);
+		printf("              p3 {%f %f} p4 {%f %f}\n", d1_2.X, d1_2.Y, d2_2.X, d2_2.Y);
 	}
 
 private:
