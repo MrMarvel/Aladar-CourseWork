@@ -54,7 +54,7 @@ public:
 				exit_state = true;
 				break;
 			}
-			auto runnable_func = menuItems[choose].func;
+			auto runnable_func = menuItems[choose-1].func;
 			(this->*runnable_func)();
 		}
 	}
