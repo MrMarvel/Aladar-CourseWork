@@ -28,6 +28,9 @@ private:
 	vector<MenuItem> menuItems;
 public:
 	FigureController() {
+		menuItems.push_back(MenuItem("Создать эллипс", &FigureController::create_ellipse));
+		menuItems.push_back(MenuItem("Удалить эллипс", &FigureController::remove_ellipse));
+		menuItems.push_back(MenuItem("Создать прямоугольник", &FigureController::create_rectangle));
 		menuItems.push_back(MenuItem("Создать прямоугольник", &FigureController::create_rectangle));
 		menuItems.push_back(MenuItem("Удалить прямоугольник", &FigureController::remove_rectangle));
 		menuItems.push_back(MenuItem("Создать шестиугольник", &FigureController::create_sexangle));
@@ -78,6 +81,63 @@ private:
 		int pos = it - figures.begin();
 		remove_figure(pos);
 	}
+
+	template <class T>
+	void remove_specific_figure() {
+		static_assert(std::is_base_of<Figure, T>::value, "type parameter of this class must derive from Figure");
+		int i = 1;
+		vector<T*> specific_figures;
+		for (Figure* fig : figures) {
+			T* rect = dynamic_cast<T*>(fig);
+			if (!rect) continue;
+			specific_figures.push_back(rect);
+			cout << "#" << i++ << " ";
+			rect->print();
+		}
+		if (i == 1) cout << "ПУСТОЙ СПИСОК" << endl;
+		if (specific_figures.empty()) {
+			cout << "Нету объектов чтоб удалить." << endl;
+			return;
+		}
+		cout << "Выберите # фигуры" << endl;
+		int choose_specific_figure = 0;
+		cin >> choose_specific_figure;
+		if (choose_specific_figure > 0 && choose_specific_figure <= specific_figures.size()) {
+			remove_figure(specific_figures[choose_specific_figure - 1]);
+		} else {
+			cout << "Неудачно." << choose_specific_figure << " > " << specific_figures.size() << " или не положительно." << endl;
+			return;
+		}
+	}
+
+	void create_ellipse() {
+		cout << "Создать эллипс.\n";
+		cout << "Введите координаты центра эллипса {x y}" << endl;
+		double x, y;
+		cin >> x >> y;
+		Point center = Point(x, y);
+		cout << "Введите параметр {a} эллипса (вытянутость по горизонтали)" << endl;
+		double a;
+		cin >> a;
+		cout << "Введите параметр {b} эллипса (вытянутость по вертикали)" << endl;
+		double b;
+		cin >> b;
+
+		Figure* fig = nullptr;
+		try {
+			fig = (Figure*) new Ellipse(center, a, b);
+		} catch (exception) {
+			delete fig;
+			cout << "Не удалось создать." << endl;
+			return;
+		}
+		figures.push_back(fig);
+		fig->print();
+	}
+	void remove_ellipse() {
+		cout << "Удалить эллипс.\n";
+		remove_specific_figure<Ellipse>();
+	}
 	void create_rectangle() {
 		cout << "Создание прямоугольника." << endl;
 		cout << "Введите координаты 1 точки диагонали {x y}" << endl;
@@ -98,32 +158,14 @@ private:
 		figures.push_back(fig);
 		fig->print();
 	}
+
+
+
 	void remove_rectangle() {
 		cout << "Удаление прямоугольника." << endl;
-		int i = 1;
-		vector<Rectangle*> rectangles;
-		for (Figure* fig : figures) {
-			Rectangle* rect = dynamic_cast<Rectangle*>(fig);
-			if (!rect) continue;
-			rectangles.push_back(rect);
-			cout << "#" << i++ << " ";
-			rect->print();
-		}
-		if (i == 1) cout << "ПУСТОЙ СПИСОК" << endl;
-		if (rectangles.empty()) {
-			cout << "Нету объектов чтоб удалить." << endl;
-			return;
-		}
-		cout << "Выберите # прямоугольника" << endl;
-		int choose_rectangle = 0;
-		cin >> choose_rectangle;
-		if (choose_rectangle > 0 && choose_rectangle <= rectangles.size()) {
-			remove_figure(rectangles[choose_rectangle-1]);
-		} else {
-			cout << "Неудачно." << choose_rectangle << " > " << rectangles.size() << " или не положительно." << endl;
-			return;
-		}
+		remove_specific_figure<Rectangle>();
 	}
+	
 	void create_sexangle() {
 		cout << "Создание шестиугольника." << endl;
 
@@ -159,29 +201,7 @@ private:
 	}
 	void remove_sexangle() {
 		cout << "Удаление шестиугольника." << endl;
-		int i = 1;
-		vector<Sixangle*> rectangles;
-		for (Figure* fig : figures) {
-			auto rect = dynamic_cast<Sixangle*>(fig);
-			if (!rect) continue;
-			rectangles.push_back(rect);
-			cout << "#" << i++ << " ";
-			rect->print();
-		}
-		if (i == 1) cout << "ПУСТОЙ СПИСОК" << endl;
-		if (rectangles.empty()) {
-			cout << "Нету объектов чтоб удалить." << endl;
-			return;
-		}
-		cout << "Выберите # шестиугольника" << endl;
-		int choose_figure = 0;
-		cin >> choose_figure;
-		if (choose_figure > 0 && choose_figure <= rectangles.size()) {
-			remove_figure(rectangles[choose_figure - 1]);
-		} else {
-			cout << "Неудачно." << choose_figure << " > " << rectangles.size() << " или не положительно." << endl;
-			return;
-		}
+		remove_specific_figure<Sixangle>();
 
 	}
 	void print_figures() {
@@ -261,7 +281,7 @@ private:
 		if (is_intersection) {
 			cout << "Есть пробитие!" << endl;
 		} else {
-			cout << "Нет столкновения между ";
+			cout << "Нет пересечений между ";
 			fig1->print();
 			cout << "и ";
 			fig2->print();
