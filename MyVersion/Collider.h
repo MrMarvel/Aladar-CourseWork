@@ -13,6 +13,7 @@ private:
 	};
 public:
 	static bool check_intersection(Figure* f1, Figure* f2) {
+		sortByTypes(f1, f2);
 		auto rect1 = dynamic_cast<Rectangle*>(f1);
 		if (rect1) {
 			auto rect2 = dynamic_cast<Rectangle*>(f2);
@@ -30,10 +31,6 @@ public:
 		}
 		auto six1 = dynamic_cast<Sixangle*>(f1);
 		if (six1) {
-			auto rect2 = dynamic_cast<Rectangle*>(f2);
-			if (rect2) {
-				return rectangle_intersect_sixangle(rect2, six1);
-			}
 			auto six2 = dynamic_cast<Sixangle*>(f2);
 			if (six2) {
 				return sixangle_intersect_sixangle(six1, six2);
@@ -45,14 +42,6 @@ public:
 		}
 		auto elipse1 = dynamic_cast<Ellipse*>(f1);
 		if (elipse1) {
-			auto rect2 = dynamic_cast<Rectangle*>(f2);
-			if (rect2) {
-				return rectangle_intersect_ellipse(rect2, elipse1);
-			}
-			auto six2 = dynamic_cast<Sixangle*>(f2);
-			if (six2) {
-				return sixangle_intersect_ellipse(six2, elipse1);
-			}
 			auto elipse2 = dynamic_cast<Ellipse*>(f2);
 			if (elipse2) {
 				return ellipse_intersect_ellipse(elipse1, elipse2);
@@ -61,6 +50,27 @@ public:
 		return false;
 	}
 private:
+	static void swap(Figure*& o1, Figure*& o2) {
+		auto t = o1;
+		o1 = o2;
+		o2 = t;
+	}
+
+	static void sortByTypes(Figure*& f1, Figure*& f2) {
+		if (sortByType<Rectangle>(f1, f2)) return;
+		if (sortByType<Sixangle>(f1, f2)) return;
+		if (sortByType<Ellipse>(f1, f2)) return;
+	}
+
+	template <class T>
+	static bool sortByType(Figure*& f1, Figure*& f2) {
+		if (dynamic_cast<T*>(f1)) return true;
+		if (dynamic_cast<T*>(f2)) {
+			swap(f1, f2);
+			return true;
+		}
+		return false;
+	}
 	static bool rectangle_intersect_rectangle(Rectangle* rect1, Rectangle* rect2) {
 		for (auto i = 0; i + 1 < rect1->getPointCount(); i++) {
 			for (auto j = 0; j + 1 < rect2->getPointCount(); j++) {
