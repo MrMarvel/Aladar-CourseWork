@@ -1,7 +1,7 @@
 #pragma once
 #include "Figure.h"
 #include "Point.h"
-
+//SSS
 class Ellipse : public virtual Figure {
 private:
 	double a, b;
