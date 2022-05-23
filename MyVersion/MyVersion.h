@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include "Point.h"
-#include "Rectangle.h"
 #include "Sixangle.h"
 #include "Figure.h"
 #include "Collider.h"
@@ -31,13 +30,9 @@ public:
 	FigureController() {
 		menuItems.push_back(MenuItem("Создать эллипс", &FigureController::create_ellipse));
 		menuItems.push_back(MenuItem("Удалить эллипс", &FigureController::remove_ellipse));
-		menuItems.push_back(MenuItem("Создать прямоугольник", &FigureController::create_rectangle));
-		menuItems.push_back(MenuItem("Создать прямоугольник", &FigureController::create_rectangle));
-		menuItems.push_back(MenuItem("Удалить прямоугольник", &FigureController::remove_rectangle));
 		menuItems.push_back(MenuItem("Создать шестиугольник", &FigureController::create_sexangle));
 		menuItems.push_back(MenuItem("Удалить шестиугольник", &FigureController::remove_sexangle));
 		menuItems.push_back(MenuItem("Вывести все фигуры", &FigureController::print_figures));
-		menuItems.push_back(MenuItem("Переместить фигуру", &FigureController::move_figure));
 		menuItems.push_back(MenuItem("Факт пересечения фигур", &FigureController::collide_detection_between_figures));
 		menuItems.push_back(MenuItem("Факт включения фигур фигур", &FigureController::include_detection_between_figures));
 	}
@@ -140,33 +135,9 @@ private:
 		cout << "Удалить эллипс.\n";
 		remove_specific_figure<Ellipse>();
 	}
-	void create_rectangle() {
-		cout << "Создание прямоугольника." << endl;
-		cout << "Введите координаты 1 точки диагонали {x y}" << endl;
-		double x, y;
-		cin >> x >> y;
-		Point d1 = Point(x, y);
-		cout << "Введите координаты 2 точки диагонали {x y}" << endl;
-		cin >> x >> y;
-		Point d2 = Point(x, y);
-		Figure* fig = nullptr;
-		try {
-			fig = (Figure*) new Rectangle(d1, d2);
-		} catch (exception) {
-			delete fig;
-			cout << "Не удалось создать." << endl;
-			return;
-		}
-		figures.push_back(fig);
-		fig->print();
-	}
 
 
 
-	void remove_rectangle() {
-		cout << "Удаление прямоугольника." << endl;
-		remove_specific_figure<Rectangle>();
-	}
 	
 	void create_sexangle() {
 		cout << "Создание шестиугольника." << endl;
@@ -215,33 +186,6 @@ private:
 			fig->print();
 		}
 		if (i == 1) cout << "ПУСТОЙ СПИСОК" << endl;
-
-	}
-	void move_figure() {
-		cout << "Передвинуть фигуру." << endl;
-		int i = 1;
-		if (figures.empty()) {
-			cout << "Нету объектов чтоб передвинуть." << endl;
-			return;
-		}
-		for (Figure* fig : figures) {
-			cout << "#" << i++ << " ";
-			fig->print();
-		}
-		cout << "Выберите # фигуры" << endl;
-		int choose_figure = 0;
-		cin >> choose_figure;
-		if (choose_figure > 0 && choose_figure <= figures.size()) {
-			auto fig = figures[choose_figure-1];
-			cout << "Введите смещение {dx dy}\n";
-			double dx, dy;
-			cin >> dx >> dy;
-			fig->move(dx, dy);
-			fig->print();
-		} else {
-			cout << "Неудачно." << choose_figure << " > " << figures.size() << " или не положительно." << endl;
-			return;
-		}
 
 	}
 	void collide_detection_between_figures() {

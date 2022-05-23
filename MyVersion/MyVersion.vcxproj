@@ -147,7 +147,6 @@
     <ClInclude Include="Figure.h" />
     <ClInclude Include="Includer.h" />
     <ClInclude Include="Point.h" />
-    <ClInclude Include="Rectangle.h" />
     <ClInclude Include="Sixangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
