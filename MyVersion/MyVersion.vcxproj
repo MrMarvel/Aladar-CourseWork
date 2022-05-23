@@ -145,6 +145,7 @@
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Ellipse.h" />
     <ClInclude Include="Figure.h" />
+    <ClInclude Include="Includer.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="Sixangle.h" />

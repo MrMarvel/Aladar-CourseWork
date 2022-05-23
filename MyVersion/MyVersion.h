@@ -8,6 +8,7 @@
 #include "Figure.h"
 #include "Collider.h"
 #include <stdio.h>
+#include "Includer.h"
 
 using namespace std;
 
@@ -324,7 +325,7 @@ private:
 			cout << "Вы выбрали один и тот же объект для проверки включения." << endl;
 			return;
 		}
-		bool is_included = Collider::check_include(fig1, fig2); // Содержит ли fig1 фигуру fig2?
+		bool is_included = Includer::check_include(fig1, fig2); // Содержит ли fig1 фигуру fig2?
 		if (is_included) {
 			cout << "Есть включение!" << endl;
 		} else {
