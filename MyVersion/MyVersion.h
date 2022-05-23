@@ -38,6 +38,7 @@ public:
 		menuItems.push_back(MenuItem("Вывести все фигуры", &FigureController::print_figures));
 		menuItems.push_back(MenuItem("Переместить фигуру", &FigureController::move_figure));
 		menuItems.push_back(MenuItem("Факт пересечения фигур", &FigureController::collide_detection_between_figures));
+		menuItems.push_back(MenuItem("Факт включения фигур фигур", &FigureController::include_detection_between_figures));
 	}
 
 	void main() {
@@ -282,6 +283,52 @@ private:
 			cout << "Есть пробитие!" << endl;
 		} else {
 			cout << "Нет пересечений между ";
+			fig1->print();
+			cout << "и ";
+			fig2->print();
+		}
+	}
+
+	void include_detection_between_figures() {
+		cout << "Проверить включение фигур." << endl;
+
+		if (figures.size() < 2) {
+			cout << "Не хватает объектов чтоб проверить включение." << endl;
+			return;
+		}
+		int i = 1;
+		for (Figure* fig : figures) {
+			cout << "#" << i++ << " ";
+			fig->print();
+		}
+		int choose_figure = 0;
+		cout << "Выберите # фигуру для сравнения 1" << endl;
+		Figure* fig1 = nullptr;
+		cin >> choose_figure;
+		if (choose_figure > 0 && choose_figure <= figures.size()) {
+			fig1 = figures[choose_figure - 1];
+		} else {
+			cout << "Неудачно." << choose_figure << " > " << figures.size() << " или не положительно." << endl;
+			return;
+		}
+		cout << "Выберите # фигуру для сравнения 2" << endl;
+		Figure* fig2 = nullptr;
+		cin >> choose_figure;
+		if (choose_figure > 0 && choose_figure <= figures.size()) {
+			fig2 = figures[choose_figure - 1];
+		} else {
+			cout << "Неудачно." << choose_figure << " > " << figures.size() << " или не положительно." << endl;
+			return;
+		}
+		if (fig1 == fig2) {
+			cout << "Вы выбрали один и тот же объект для проверки включения." << endl;
+			return;
+		}
+		bool is_included = Collider::check_include(fig1, fig2); // Содержит ли fig1 фигуру fig2?
+		if (is_included) {
+			cout << "Есть включение!" << endl;
+		} else {
+			cout << "Нет включений между ";
 			fig1->print();
 			cout << "и ";
 			fig2->print();
