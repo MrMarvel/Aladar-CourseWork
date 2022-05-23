@@ -55,6 +55,12 @@ public:
 	}
 private:
 	bool validate() {
+		if (Point::lineLen(p1, p2) <= 0) return false;
+		if (Point::lineLen(p2, p3) <= 0) return false;
+		if (Point::lineLen(p3, p4) <= 0) return false;
+		if (Point::lineLen(p4, p5) <= 0) return false;
+		if (Point::lineLen(p5, p6) <= 0) return false;
+		if (Point::lineLen(p6, p1) <= 0) return false;
 		return true;
 	}
 };
