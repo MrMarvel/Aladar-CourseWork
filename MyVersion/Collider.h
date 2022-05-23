@@ -7,11 +7,20 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+/*
+Коллайдер, реализующий методы обработки столкновений и включений
+*/
 class Collider {
 private:
+	/*
+	DEPRECATED
+	*/
 	struct IntersectionSelection {
 	};
 public:
+	/*
+	Проверяет пересечение одной фигуры другой
+	*/
 	static bool check_intersection(Figure* f1, Figure* f2) {
 		sortByTypes(f1, f2);
 		auto rect1 = dynamic_cast<Rectangle*>(f1);
@@ -49,19 +58,68 @@ public:
 		}
 		return false;
 	}
+	/*
+	Проверяет включение одной фигуры в другую
+	*/
+	static bool check_include(Figure* f1, Figure* f2) {
+		sortByTypes(f1, f2);
+		auto rect1 = dynamic_cast<Rectangle*>(f1);
+		if (rect1) {
+			auto rect2 = dynamic_cast<Rectangle*>(f2);
+			if (rect2) {
+				return rectangle_intersect_rectangle(rect1, rect2);
+			}
+			auto six2 = dynamic_cast<Sixangle*>(f2);
+			if (six2) {
+				return rectangle_intersect_sixangle(rect1, six2);
+			}
+			auto elipse2 = dynamic_cast<Ellipse*>(f2);
+			if (elipse2) {
+				return rectangle_intersect_ellipse(rect1, elipse2);
+			}
+		}
+		auto six1 = dynamic_cast<Sixangle*>(f1);
+		if (six1) {
+			auto six2 = dynamic_cast<Sixangle*>(f2);
+			if (six2) {
+				return sixangle_intersect_sixangle(six1, six2);
+			}
+			auto elipse2 = dynamic_cast<Ellipse*>(f2);
+			if (elipse2) {
+				return sixangle_intersect_ellipse(six1, elipse2);
+			}
+		}
+		auto elipse1 = dynamic_cast<Ellipse*>(f1);
+		if (elipse1) {
+			auto elipse2 = dynamic_cast<Ellipse*>(f2);
+			if (elipse2) {
+				return ellipse_intersect_ellipse(elipse1, elipse2);
+			}
+		}
+		return false;
+	}
 private:
+	/*
+	Поменять местами указатели
+	*/
 	static void swap(Figure*& o1, Figure*& o2) {
 		auto t = o1;
 		o1 = o2;
 		o2 = t;
 	}
 
+	/*
+	Отсортировать по типам фигуры для оптимизации кода
+	*/
 	static void sortByTypes(Figure*& f1, Figure*& f2) {
 		if (sortByType<Rectangle>(f1, f2)) return;
 		if (sortByType<Sixangle>(f1, f2)) return;
 		if (sortByType<Ellipse>(f1, f2)) return;
 	}
 
+	/*
+	Шаблонная функция внутренней сортировке по общему типу
+	*/
 	template <class T>
 	static bool sortByType(Figure*& f1, Figure*& f2) {
 		if (dynamic_cast<T*>(f1)) return true;
@@ -154,6 +212,9 @@ private:
 		}
 		return false;
 	}
+	/*
+	Проверяет пересечение концов отрезков и эллипса
+	*/
 	static bool isLineByEndsAndEllipseIntersecting(Point end1, Point end2, Ellipse& elips) {
 		// Не учитывает весь отрезок
 		Point center = elips.getCenter();
@@ -166,6 +227,9 @@ private:
 		if (middle_in_ellipse) return true;
 		if (end1_in_ellipse xor end2_in_ellipse) return true;
 	}
+	/*
+	Проверяет пересечение отрезков
+	*/
 	static bool isLineAndLineIntersecting(Point a, Point b, Point c, Point d) { // OUTSOURCE
 		float denominator = ((b.X - a.X) * (d.Y - c.Y)) - ((b.Y - a.Y) * (d.X - c.X));
 		float numerator1 = ((a.Y - c.Y) * (d.X - c.X)) - ((a.X - c.X) * (d.Y - c.Y));
