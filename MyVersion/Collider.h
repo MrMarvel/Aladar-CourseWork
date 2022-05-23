@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Figure.h"
-#include "Rectangle.h"
 #include "Sixangle.h"
 #include "Ellipse.h"
 #define _USE_MATH_DEFINES
@@ -23,21 +22,6 @@ public:
 	*/
 	static bool check_intersection(Figure* f1, Figure* f2) {
 		sortByTypes(f1, f2);
-		auto rect1 = dynamic_cast<Rectangle*>(f1);
-		if (rect1) {
-			auto rect2 = dynamic_cast<Rectangle*>(f2);
-			if (rect2) {
-				return rectangle_intersect_rectangle(rect1, rect2);
-			}
-			auto six2 = dynamic_cast<Sixangle*>(f2);
-			if (six2) {
-				return rectangle_intersect_sixangle(rect1, six2);
-			}
-			auto elipse2 = dynamic_cast<Ellipse*>(f2);
-			if (elipse2) {
-				return rectangle_intersect_ellipse(rect1, elipse2);
-			}
-		}
 		auto six1 = dynamic_cast<Sixangle*>(f1);
 		if (six1) {
 			auto six2 = dynamic_cast<Sixangle*>(f2);
@@ -73,7 +57,6 @@ protected:
 	Отсортировать по типам фигуры для оптимизации кода
 	*/
 	static void sortByTypes(Figure*& f1, Figure*& f2) {
-		if (sortByType<Rectangle>(f1, f2)) return;
 		if (sortByType<Sixangle>(f1, f2)) return;
 		if (sortByType<Ellipse>(f1, f2)) return;
 	}
@@ -94,44 +77,6 @@ protected:
 	
 
 private:
-
-	static bool rectangle_intersect_rectangle(Rectangle* rect1, Rectangle* rect2) {
-		for (auto i = 0; i + 1 < rect1->getPointCount(); i++) {
-			for (auto j = 0; j + 1 < rect2->getPointCount(); j++) {
-				if (isLineAndLineIntersecting(rect1->getPoint(i), rect1->getPoint(i + 1), rect2->getPoint(j), rect2->getPoint(j + 1))) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	static bool rectangle_intersect_sixangle(Rectangle* rect, Sixangle* six) {
-		for (auto i = 0; i + 1 < rect->getPointCount(); i++) {
-			for (auto j = 0; j + 1 < six->getPointCount(); j++) {
-				if (isLineAndLineIntersecting(rect->getPoint(i), rect->getPoint(i + 1), six->getPoint(j), six->getPoint(j + 1))) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	static bool rectangle_intersect_ellipse(Rectangle* rect, Ellipse* elips) {
-		double angle_step = 20 * (M_PI / 180);
-		int steps = 2 * M_PI / angle_step;
-		for (auto i = 0; i + 1 < steps; i++) {
-			for (auto j = 0; j + 1 < steps; j++) {
-				if (isLineAndLineIntersecting(rect->getPoint(i), rect->getPoint(i + 1),
-					elips->getPointByAngle(angle_step * (j)), elips->getPointByAngle(angle_step * (j + 1)))) {
-					return true;
-				}
-				if (isLineAndLineIntersecting(rect->getPoint(i), rect->getPoint(i + 1),
-					elips->getPointByAngle(angle_step * (j)), elips->getPointByAngle(angle_step * (j + steps/2)))) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 	static bool sixangle_intersect_ellipse(Sixangle* six, Ellipse* elips) {
 		double angle_step = 20 * (M_PI / 180);
 		int steps = 2 * M_PI / angle_step;

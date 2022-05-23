@@ -29,9 +29,6 @@
     <ClInclude Include="Point.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Rectangle.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Sixangle.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
